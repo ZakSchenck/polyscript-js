@@ -1,0 +1,20 @@
+{
+  "name": "nederscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/generator": "^7.23.6",
+    "@babel/parser": "^7.23.6",
+    "@babel/traverse": "^7.23.6",
+    "prettier": "^3.1.1"
+  },
+  "devDependencies": {
+    "js-beautify": "^1.14.11"
+  }
+}
