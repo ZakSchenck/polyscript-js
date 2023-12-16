@@ -3,6 +3,13 @@
 ## What is this?
 This is a potential huge educational resource for people learning Javascript who are not English speakers. I traverse the vanilla Javascript AST of a code snippet, then spit out a translated copy from a multitude of languages. This only effects keywords, and will NOT translate strings.
 
+## Tools used:
+* Javascript
+* Babel Traverse
+* Babel Parser
+* Node.js
+* Beautify
+
 ## Example Inputs and Outputs
 ### Spanish:
 #### Input
@@ -61,4 +68,27 @@ One of the challenges was dealing with certain keywords not explicitly being ins
                         tokenExtractor(elseStart, elseStart + 4, languageMap.else)
                     }
                 }
+```
+
+There are several algorithms I also had to implement to make sure the code is as clean as possible:
+```js
+    /**
+     * Extracts token keywords from the original code
+     * @param {Number} start // Starting indice of token placement
+     * @param {Number} end // Ending indice of token placement
+     * @param {String} replacement // Token to replace with
+     * @returns 
+     */
+    const tokenExtractor = (start, end, replacement) => {
+        return replacements.push({ start, end, replacement })
+    }
+
+//............................................
+
+    // Apply replacements in reverse order to the code
+    // Sorting the replacements array in order of index positions to counteract issues 
+    replacements.sort((a, b) => b.start - a.start).forEach(({ start, end, replacement }) => {
+        // Replaces each keyword while, adding on the rest of the original code string
+        code = code.substring(0, start) + replacement + code.substring(end);
+    });
 ```
