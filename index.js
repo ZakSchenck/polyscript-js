@@ -3,9 +3,11 @@ const traverse = require('@babel/traverse').default;
 const beautify = require('js-beautify').js;
 const { dutchKeywordMap } = require('./language-maps/dutch-maps');
 const { spanishKeywordMap } = require('./language-maps/spanish-maps');
+const { isMemberExpression } = require('@babel/types');
 
-let codeString = `let myVariable = null; function myFunction() { if (javas === true) { return false } else if (java === false) { return 'true' } else { return 'hello' } }`;
+let codeString = `const jsonData = document.querySelector('#hello') function myFunc() { return JSON.stringify(jsonData) }`;
 
+// Beutifies Javascript code
 const processCode = (languageMap) => {
     let code = beautify(codeString, {
         indent_size: 4,
@@ -78,6 +80,11 @@ const processCode = (languageMap) => {
 
             // Extracts null keyword to replace
             if (path.isNullLiteral()) tokenExtractor(path.node.start, path.node.start + 'null'.length, languageMap.null);
+
+            // Gets each member expression to replace
+            if (path.isMemberExpression()) {
+                tokenExtractor(path.node.property.start, path.node.property.end, languageMap.memberExpressions[path.node.property.name])
+            }
         }
     });
 
@@ -91,4 +98,4 @@ const processCode = (languageMap) => {
     return code
 }
 
-console.log(processCode(spanishKeywordMap))
+console.log(processCode(dutchKeywordMap))

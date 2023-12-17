@@ -23,7 +23,7 @@ const spanishKeywordMap = {
     instanceof: 'instancia de',
     new: 'nuevo',
     null: 'nulo',
-    return: 'retorno',
+    return: 'retornar',
     super: 'super',
     switch: 'interruptor',
     this: 'esto',
