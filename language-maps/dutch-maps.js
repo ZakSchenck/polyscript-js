@@ -1,8 +1,8 @@
 // Mapping English keywords to Dutch
 const dutchKeywordMap = {
-    await: 'wachten',
-    break: 'breken', 
-    case: 'geval',
+    await: 'wachten', //*
+    break: 'breken', //*
+    case: 'geval', //*
     catch: 'vangen',
     class: 'klasse',
     continue: 'doorgaan',
@@ -23,10 +23,10 @@ const dutchKeywordMap = {
     in: 'in',
     instanceof: 'instantievan',
     new: 'nieuw',
-    null: 'null',
+    null: 'null', //*
     return: 'terugkeer', //*
     super: 'super',
-    switch: 'schakelen',
+    switch: 'schakelen', //*
     this: 'dit',
     throw: 'gooien',
     true: 'waar', //*
@@ -39,6 +39,7 @@ const dutchKeywordMap = {
     with: 'met',
     yield: 'opbrengst',
     length: 'lengte',
+    async: 'asynchroon', //+
     memberExpressions: {
         length: 'lengte',
         push: 'duw',

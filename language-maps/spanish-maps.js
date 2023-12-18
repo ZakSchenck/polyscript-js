@@ -36,7 +36,8 @@ const spanishKeywordMap = {
     while: 'mientras',
     with: 'con',
     yield: 'rendimiento',
-    length: 'longitud'
+    length: 'longitud',
+    json: 'json'
 }
 
 module.exports = { spanishKeywordMap }
