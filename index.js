@@ -3,14 +3,21 @@ const traverse = require('@babel/traverse').default;
 const beautify = require('js-beautify').js;
 const { dutchKeywordMap } = require('./language-maps/dutch-maps');
 const { spanishKeywordMap } = require('./language-maps/spanish-maps');
-const { isMemberExpression } = require('@babel/types');
 
 let codeString = `
-async   function   myFunction (res) {
-    const vari = await data
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); 
+        this.breed = breed;
+    }
 }
 `;
-
 // Beutifies Javascript code
 const processCode = (languageMap) => {
     let code = beautify(codeString, {
@@ -33,101 +40,173 @@ const processCode = (languageMap) => {
         return replacements.push({ start, end, replacement })
     }
 
-    traverse(ast, {
-        enter(path) {
-            // Extracts for loop statement token "for"
-            if (path.isForStatement()) {
-                const forKeywordLength = 'for'.length
-                tokenExtractor(path.node.start, path.node.start + forKeywordLength, languageMap.for);
+    /**
+     * Processes for statement replacements
+     * @param {Object} path Path of the AST being returned
+     * @param {Object} language Gets specific language being used
+     * @returns {Function}
+     */
+    const processForStatement = (path, language) => {
+        const forKeywordLength = 'for'.length
+        return tokenExtractor(path.node.start, path.node.start + forKeywordLength, language.for);
+    }
+
+    /**
+     * Processes variable declaration keywords
+     * @param {Object} path Path of the AST being returned
+     * @param {Object} language Gets specific language being used
+     * @returns {Function}
+     */
+    const processVariableDeclaration = (path, language) => {
+        const declarationType = path.node.kind;
+        // Gets start position of token
+        const start = path.node.start;
+        // Gets the end position of token
+        const end = start + declarationType.length;
+
+        return tokenExtractor(path.node.start, end, language[declarationType]);
+    }
+
+    /**
+     * Processes variable declaration keywords
+     * @param {Object} path Path of the AST being returned
+     * @param {Object} language Gets specific language being used
+     * @returns {Function}
+     */
+    const processIfStatement = (path, language) => {
+        const ifKeywordLength = 'if'.length;
+        tokenExtractor(path.node.start, path.node.start + ifKeywordLength, language.if);
+
+        if (path.node.alternate) {
+            // These get the end of the consequent and start of alternate. This achieves the else guaranteed in between these statements
+            const consequentEnd = path.node.consequent.end;
+            const alternateStart = path.node.alternate.start;
+
+            // Source code that lies in between each start and end
+            const betweenConsequentAndAlternate = code.substring(consequentEnd, alternateStart);
+
+            // Finds the else keyword in the code snippet
+            const elseIndex = betweenConsequentAndAlternate.indexOf('else');
+
+            // Quick check to see if else exists
+            if (elseIndex !== -1) {
+                const elseStart = consequentEnd + elseIndex;
+                // Finally replacing the extracted else
+                tokenExtractor(elseStart, elseStart + 4, language.else)
             }
-
-            // Extracts tokens from variable declarations
-            if (path.isVariableDeclaration()) {
-                const declarationType = path.node.kind;
-                // Gets start position of token
-                const start = path.node.start;
-                // Gets the end position of token
-                const end = start + declarationType.length;
-
-                tokenExtractor(path.node.start, end, languageMap[declarationType]);
-            }
-
-            // Extracts tokens from variable declarations
-            if (path.isIfStatement()) {
-                const ifKeywordLength = 'if'.length;
-                tokenExtractor(path.node.start, path.node.start + ifKeywordLength, languageMap.if);
-
-                if (path.node.alternate) {
-                    // These get the end of the consequent and start of alternate. This achieves the else guaranteed in between these statements
-                    const consequentEnd = path.node.consequent.end;
-                    const alternateStart = path.node.alternate.start;
-
-                    // Source code that lies in between each start and end
-                    const betweenConsequentAndAlternate = code.substring(consequentEnd, alternateStart);
-
-                    // Finds the else keyword in the code snippet
-                    const elseIndex = betweenConsequentAndAlternate.indexOf('else');
-
-                    // Quick check to see if else exists
-                    if (elseIndex !== -1) {
-                        const elseStart = consequentEnd + elseIndex;
-                        // Finally replacing the extracted else
-                        tokenExtractor(elseStart, elseStart + 4, languageMap.else)
-                    }
-                }
-            }
-
-            // Extracts boolean values to replace
-            if (path.isBooleanLiteral()) tokenExtractor(path.node.start, path.node.end, languageMap[path.node.value]);
-
-            // Extracts function keyword to replace, and takes into account async functions
-            if (path.isFunctionDeclaration()) {
-                // Handles keyword logic if the declaration is an async function
-                if (path.node.async) {
-                    let asyncKeywordLength = 'async'.length;
-                    // Calculates start position of 'function' keyword
-                    let functionKeywordStart = path.node.start + asyncKeywordLength;
-
-                    const functionKeywordLength = 'function'.length;
-
-                    // Takes into account whitespace between async keyword and function
-                    const betweenAsyncAndFunction = codeString.slice(path.node.start, path.node.start + functionKeywordStart);
-                    const whitespaceLength = betweenAsyncAndFunction.match(/\s+/)[0].length;
-
-                    functionKeywordStart += whitespaceLength;
-
-                    tokenExtractor(functionKeywordStart, functionKeywordStart + functionKeywordLength, languageMap.function);
-                    tokenExtractor(path.node.start, path.node.start + asyncKeywordLength, languageMap.async);
-
-                } else {
-                    // Logic if function is not async
-                    tokenExtractor(path.node.start, path.node.start + 'function'.length, languageMap.function);
-                }
-            }
-
-            // Extracts return keyword to replace
-            if (path.isReturnStatement()) tokenExtractor(path.node.start, path.node.start + 'return'.length, languageMap.return);
-            
-            // Extracts null keyword to replace
-            if (path.isNullLiteral()) tokenExtractor(path.node.start, path.node.start + 'null'.length, languageMap.null);
-
-            // Gets each member expression to replace
-            if (path.isMemberExpression()) {
-                tokenExtractor(path.node.property.start, path.node.property.end, languageMap.memberExpressions[path.node.property.name]);
-            }
-
-            // Replaces the term "switch" in a switch statement
-            if (path.isSwitchStatement()) tokenExtractor(path.node.start, path.node.start + 5, languageMap.switch);
-
-            // Replaces the term "case" in a switch statement
-            if (path.isSwitchCase()) tokenExtractor(path.node.start, path.node.start + 4, languageMap.case);
-
-            // Replaces the term "break" in a switch statement
-            if (path.isBreakStatement()) tokenExtractor(path.node.start, path.node.start + 5, languageMap.break);
-
-            // Replaces the term "await" in an async function
-            if (path.isAwaitExpression()) tokenExtractor(path.node.start, path.node.start + 5, languageMap.await);
         }
+    }
+
+    /**
+     * Processes variable declaration keywords
+     * @param {Object} path Path of the AST being returned
+     * @param {Object} language Gets specific language being used
+     * @returns {Function}
+     */
+    const procesFunctionDeclaration = (path, language) => {
+        // Handles keyword logic if the declaration is an async function
+        if (path.node.async) {
+            let asyncKeywordLength = 'async'.length;
+            // Calculates start position of 'function' keyword
+            let functionKeywordStart = path.node.start + asyncKeywordLength;
+
+            const functionKeywordLength = 'function'.length;
+
+            // Takes into account whitespace between async keyword and function
+            const betweenAsyncAndFunction = codeString.slice(path.node.start, path.node.start + functionKeywordStart);
+            const whitespaceLength = betweenAsyncAndFunction.match(/\s+/)[0].length;
+
+            functionKeywordStart += whitespaceLength;
+
+            tokenExtractor(functionKeywordStart, functionKeywordStart + functionKeywordLength, language.function);
+            tokenExtractor(path.node.start, path.node.start + asyncKeywordLength, language.async);
+
+        } else {
+            // Logic if function is not async
+            tokenExtractor(path.node.start, path.node.start + 'function'.length, language.function);
+        }
+    }
+
+    traverse(ast, {
+        // Extracts for loop statement token "for"
+        ForStatement(path) {
+            processForStatement(path, languageMap);
+        },
+
+        // Extracts tokens from variable declarations
+        VariableDeclaration(path) {
+            processVariableDeclaration(path, languageMap)
+        },
+
+        // Extracts tokens from variable declarations
+        ifStatement(path) {
+            processIfStatement(path, languageMap)
+        },
+
+        // Extracts boolean values to replace
+        BooleanLiteral(path) {
+            tokenExtractor(path.node.start, path.node.end, languageMap[path.node.value])
+        },
+
+        // Extracts function keyword to replace, and takes into account async functions
+        FunctionDeclaration(path) {
+            procesFunctionDeclaration(path, languageMap)
+        },
+
+        // Extracts return keyword to replace
+        ReturnStatement(path) {
+            tokenExtractor(path.node.start, path.node.start + 'return'.length, languageMap.return)
+        },
+
+        // Extracts null keyword to replace
+        NullLiteral(path) {
+            tokenExtractor(path.node.start, path.node.start + 'null'.length, languageMap.null);
+        },
+
+        // Gets each member expression to replace
+        MemberExpression(path) {
+            tokenExtractor(path.node.property.start, path.node.property.end, languageMap.memberExpressions[path.node.property.name]);
+        },
+
+        // Replaces the term "switch" in a switch statement
+        SwitchStatement(path) {
+            tokenExtractor(path.node.start, path.node.start + 5, languageMap.switch);
+        },
+
+        // Replaces the term "case" in a switch statement
+        SwitchCase(path) {
+            tokenExtractor(path.node.start, path.node.start + 'case'.length, languageMap.case);
+        },
+
+        // Replaces the term "break" in a switch statement
+        BreakStatement(path) {
+            tokenExtractor(path.node.start, path.node.start + 'break'.length, languageMap.break);
+        },
+
+        // Replaces the term "await" in an async function
+        AwaitExpression(path) {
+            tokenExtractor(path.node.start, path.node.start + 'await'.length, languageMap.await);
+        },
+
+        // Replaces the term "try" in a try/catch block
+        TryStatement(path) {
+            tokenExtractor(path.node.start, path.node.start + 'try'.length, languageMap.try);
+        },
+
+        // Replaces the term "catch" in a try/catch block
+        CatchClause(path) {
+            tokenExtractor(path.node.start, path.node.start + 'catch'.length, languageMap.catch);
+        },
+
+        // Replaces the term "class" when initializing a class
+        ClassDeclaration(path) {
+            tokenExtractor(path.node.start, path.node.start + 'class'.length, languageMap.class);
+        },
+
+        // Replaces the term "constructor" inside a class method
+        ClassMethod(path) {
+            tokenExtractor(path.node.start, path.node.start + path.node.kind.length, languageMap[path.node.kind])
+        },
     });
 
     // Apply replacements in reverse order to the code

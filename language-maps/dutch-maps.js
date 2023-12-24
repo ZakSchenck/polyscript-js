@@ -3,8 +3,9 @@ const dutchKeywordMap = {
     await: 'wachten', //*
     break: 'breken', //*
     case: 'geval', //*
-    catch: 'vangen',
-    class: 'klasse',
+    catch: 'vangen', //*
+    class: 'klasse', //*
+    constructor: 'bouwer', //*
     continue: 'doorgaan',
     debugger: 'debugger',
     default: 'standaard',
@@ -21,6 +22,7 @@ const dutchKeywordMap = {
     if: 'als', //*
     import: 'importeren',
     in: 'in',
+    of: 'van',
     instanceof: 'instantievan',
     new: 'nieuw',
     null: 'null', //*
@@ -30,7 +32,7 @@ const dutchKeywordMap = {
     this: 'dit',
     throw: 'gooien',
     true: 'waar', //*
-    try: 'proberen',
+    try: 'proberen', //*
     typeof: 'typeof',
     var: 'var', //*
     const: 'const', //*
@@ -38,7 +40,7 @@ const dutchKeywordMap = {
     while: 'terwijl',
     with: 'met',
     yield: 'opbrengst',
-    length: 'lengte',
+    length: 'lengte', //*
     async: 'asynchroon', //+
     memberExpressions: {
         length: 'lengte',
