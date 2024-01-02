@@ -53,16 +53,15 @@ export default {
     position: relative;
     gap: 16px;
     img {
-        position: absolute;
-        top: -25px;
-        left: -20px;
-        width: 90px;
-        height: auto;
-        filter: invert(1) hue-rotate(180deg);
-  /* You might need to adjust the brightness and contrast to suit your image */
-  filter: invert(1) hue-rotate(180deg) brightness(0.5) contrast(200%);
-  /* Apply a blue hue */
-  filter: invert(1) hue-rotate(180deg) brightness(0.4) contrast(200%) sepia(1) hue-rotate(200deg);
+      position: absolute;
+      top: -25px;
+      left: -20px;
+      width: 90px;
+      height: auto;
+      // Applies blue tint filter to quote img
+      filter: invert(1) hue-rotate(180deg);
+      filter: invert(1) hue-rotate(180deg) brightness(0.36) contrast(200%)
+        sepia(1) hue-rotate(200deg);
     }
     #info-card__ghub-link {
       font-weight: bold;
@@ -92,7 +91,7 @@ export default {
   .info-card__card {
     padding: 16px !important;
     img {
-        display: none;
+      display: none;
     }
   }
 }
@@ -100,7 +99,7 @@ export default {
   .info-card__card {
     width: 95%;
     img {
-        display: none;
+      display: none;
     }
   }
 }

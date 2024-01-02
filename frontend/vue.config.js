@@ -1,19 +1,18 @@
 const webpack = require('webpack');
 
 module.exports = {
-  // ... other configurations ...
+  publicPath: process.env.NODE_ENV === 'production' ? '/polyscript-js/' : '/',
   configureWebpack: {
     resolve: {
       fallback: {
         buffer: require.resolve('buffer/'),
-        process: require.resolve('process/browser'), // Add this line
+        process: require.resolve('process/browser'),
       },
     },
     plugins: [
-      // ... other plugins ...
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
-        process: 'process/browser', // Add this line
+        process: 'process/browser',
       }),
     ],
   },
