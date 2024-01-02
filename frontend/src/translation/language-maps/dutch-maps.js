@@ -6,10 +6,10 @@ const dutchKeywordMap = {
     catch: 'vangen', //*
     class: 'klasse', //*
     constructor: 'bouwer', //*
-    continue: 'doorgaan',
-    debugger: 'debugger',
-    default: 'standaard',
-    delete: 'verwijderen',
+    continue: 'doorgaan', //*
+    debugger: 'debugger', //*
+    default: 'standaard', //*
+    delete: 'verwijderen', //*
     let: 'laat', //*
     do: 'doe',
     else: 'anders', //*
