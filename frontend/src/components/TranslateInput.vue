@@ -86,4 +86,10 @@ textarea {
     border: 2px solid rgb(0, 0, 159);
   }
 }
+
+@media all and (max-width: 788px) {
+    .translate-input__text-container {
+        flex-direction: column;
+    }
+}
 </style>
