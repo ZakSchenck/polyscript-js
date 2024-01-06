@@ -21,8 +21,8 @@ const dutchKeywordMap = {
     function: 'functie', //*
     if: 'als', //*
     import: 'importeren',
-    in: 'in',
-    of: 'van',
+    in: 'in', //*
+    of: 'van', //*
     instanceof: 'instantievan',
     new: 'nieuw',
     null: 'null', //*
@@ -33,11 +33,11 @@ const dutchKeywordMap = {
     throw: 'gooien',
     true: 'waar', //*
     try: 'proberen', //*
-    typeof: 'typeof',
+    typeof: 'soortvan', //*
     var: 'var', //*
     const: 'const', //*
-    void: 'leegte',
-    while: 'terwijl',
+    void: 'leegte', //*
+    while: 'terwijl', //*
     with: 'met',
     yield: 'opbrengst',
     length: 'lengte', //*

@@ -2,8 +2,14 @@ const parser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const beautify = require('js-beautify').js;
 
-
+/**
+ * 
+ * @param {Object} languageMap 
+ * @param {String} codeString 
+ * @returns {String}
+ */
 export const processCode = (languageMap, codeString) => {
+    // Formats and beautifies returned code
     let code = beautify(codeString, {
         indent_size: 4,
         space_in_empty_paren: true
@@ -30,7 +36,7 @@ export const processCode = (languageMap, codeString) => {
          * Processes for statement replacements
          * @param {Object} path Path of the AST being returned
          * @param {Object} language Gets specific language being used
-         * @returns {Function}
+         * @returns {Function} tokenExtractor
          */
         const processForStatement = (path, language) => {
             const forKeywordLength = 'for'.length
@@ -41,7 +47,7 @@ export const processCode = (languageMap, codeString) => {
          * Processes variable declaration keywords
          * @param {Object} path Path of the AST being returned
          * @param {Object} language Gets specific language being used
-         * @returns {Function}
+         * @returns {Function} tokenExtractor
          */
         const processVariableDeclaration = (path, language) => {
             const declarationType = path.node.kind;
@@ -57,7 +63,7 @@ export const processCode = (languageMap, codeString) => {
          * Processes variable declaration keywords
          * @param {Object} path Path of the AST being returned
          * @param {Object} language Gets specific language being used
-         * @returns {Function}
+         * @returns {Function} tokenExtractor
          */
         const processIfStatement = (path, language) => {
             const ifKeywordLength = 'if'.length;
@@ -87,7 +93,7 @@ export const processCode = (languageMap, codeString) => {
          * Processes variable declaration keywords
          * @param {Object} path Path of the AST being returned
          * @param {Object} language Gets specific language being used
-         * @returns {Function}
+         * @returns {Function} tokenExtractor
          */
         const procesFunctionDeclaration = (path, language) => {
             // Handles keyword logic if the declaration is an async function
@@ -110,6 +116,34 @@ export const processCode = (languageMap, codeString) => {
             } else {
                 // Logic if function is not async
                 tokenExtractor(path.node.start, path.node.start + 'function'.length, language.function);
+            }
+        }
+
+        /**
+         * Processes unary expression operator keywords
+         * @param {Object} path Path of the AST being returned
+         * @param {Object} language Gets specific language being used
+         * @returns {Function} tokenExtractor
+         */
+        const processUnaryExpr = (path, language) => {
+            switch (path.node.operator) {
+                case 'typeof': {
+                    const typeofLength = 'typeof'.length;
+                    tokenExtractor(path.node.start, path.node.start + typeofLength, language['typeof']);
+                    break;
+                }
+                case 'void': {
+                    const voidLength = 'void'.length;
+                    tokenExtractor(path.node.start, path.node.start + voidLength, language['void']);
+                    break;
+                }
+                case 'delete': {
+                    const deleteLength = 'delete'.length;
+                    tokenExtractor(path.node.start, path.node.start + deleteLength, language['delete']);
+                    break;
+                }
+                default:
+                    break;
             }
         }
 
@@ -141,17 +175,22 @@ export const processCode = (languageMap, codeString) => {
 
             // Extracts return keyword to replace
             ReturnStatement(path) {
-                tokenExtractor(path.node.start, path.node.start + 'return'.length, languageMap.return)
+                const returnKeywordLen = 'return'.length
+                tokenExtractor(path.node.start, path.node.start + returnKeywordLen, languageMap.return)
             },
 
             // Extracts null keyword to replace
             NullLiteral(path) {
-                tokenExtractor(path.node.start, path.node.start + 'null'.length, languageMap.null);
+                const nullKeywordLen = 'null'.length;
+                tokenExtractor(path.node.start, path.node.start + nullKeywordLen, languageMap.null);
             },
 
             // Gets each member expression to replace
             MemberExpression(path) {
-                tokenExtractor(path.node.property.start, path.node.property.end, languageMap.memberExpressions[path.node.property.name]);
+                // This if check separates object properties and javascript keywords
+                if (path.node.property.name in languageMap.memberExpressions) {
+                    tokenExtractor(path.node.property.start, path.node.property.end, languageMap.memberExpressions[path.node.property.name]);
+                }
             },
 
             // Replaces the term "switch" in a switch statement
@@ -165,32 +204,38 @@ export const processCode = (languageMap, codeString) => {
 
             // Replaces the term "case" in a switch statement
             SwitchCase(path) {
-                tokenExtractor(path.node.start, path.node.start + 'case'.length, languageMap.case);
+                const caseKeywordLen = 'case'.length
+                tokenExtractor(path.node.start, path.node.start + caseKeywordLen, languageMap.case);
             },
 
             // Replaces the term "break" in a switch statement
             BreakStatement(path) {
-                tokenExtractor(path.node.start, path.node.start + 'break'.length, languageMap.break);
+                const breakKeywordLen = 'break'.length;
+                tokenExtractor(path.node.start, path.node.start + breakKeywordLen, languageMap.break);
             },
 
             // Replaces the term "await" in an async function
             AwaitExpression(path) {
-                tokenExtractor(path.node.start, path.node.start + 'await'.length, languageMap.await);
+                const awaitKeywordLen = 'await'.length;
+                tokenExtractor(path.node.start, path.node.start + awaitKeywordLen, languageMap.await);
             },
 
             // Replaces the term "try" in a try/catch block
             TryStatement(path) {
-                tokenExtractor(path.node.start, path.node.start + 'try'.length, languageMap.try);
+                const tryKeyWordLen = 'try'.length;
+                tokenExtractor(path.node.start, path.node.start + tryKeyWordLen, languageMap.try);
             },
 
             // Replaces the term "catch" in a try/catch block
             CatchClause(path) {
-                tokenExtractor(path.node.start, path.node.start + 'catch'.length, languageMap.catch);
+                const catchKeywordLen = 'catch'.length;
+                tokenExtractor(path.node.start, path.node.start + catchKeywordLen, languageMap.catch);
             },
 
             // Replaces the term "class" when initializing a class
             ClassDeclaration(path) {
-                tokenExtractor(path.node.start, path.node.start + 'class'.length, languageMap.class);
+                const classKeywordLen = 'class'.length;
+                tokenExtractor(path.node.start, path.node.start + classKeywordLen, languageMap.class);
             },
 
             // Replaces the term "constructor" inside a class method
@@ -200,8 +245,33 @@ export const processCode = (languageMap, codeString) => {
 
             // Replaces the term "continue" inside a for loop
             ContinueStatement(path) {
-                tokenExtractor(path.node.start, path.node.start + 'continue'.length, languageMap['continue'])
+                const continueKeywordLen = 'continue'.length;
+                tokenExtractor(path.node.start, path.node.start + continueKeywordLen, languageMap['continue'])
             },
+
+            // Replaces the term "while" inside a while loop
+            WhileStatement(path) {
+                const whileKeywordLen = 'while'.length
+                tokenExtractor(path.node.start, path.node.start + whileKeywordLen, languageMap['while'])
+            },
+
+            // Finds proper unary expression operators
+            UnaryExpression(path) {
+                processUnaryExpr(path, languageMap);
+            },
+
+            // Replaces for with "voor" in a "for in" statement
+            ForInStatement(path) {
+                const forKeywordLen = 'for'.length;
+                tokenExtractor(path.node.start, path.node.start + forKeywordLen, languageMap['for']);
+            },
+
+            // Replaces for with "voor" in a "for of" statement
+            ForOfStatement(path) {
+                const forKeywordLen = 'for'.length;
+                tokenExtractor(path.node.start, path.node.start + forKeywordLen, languageMap['for']);
+                tokenExtractor(path.node.left.end + 1, path.node.right.start - 1, languageMap['of'])
+            }
 
         });
 

@@ -1,12 +1,22 @@
 <template>
   <div class="translate-input__container">
     <div class="translate-input__text-container">
-      <textarea
+      <!-- 
+        <textarea
         :value="inputText"
         @input="updateInputText($event.target.value)"
         placeholder="Paste your VALID Javascript code here"
-      ></textarea>
-      <textarea readonly :value="returnedText"></textarea>
+      </textarea> -->
+
+      <prism-editor
+      class="my-editor height-300"
+      v-model="inputText"
+      @input="updateInputText($event.target.value)"
+      :highlight="highlighter"
+      @keydown="handleKeyPress"
+      :line-numbers="lineNumbers"
+      ></prism-editor>
+      <textarea class="translate-input__text-area" readonly :value="returnedText"></textarea>
     </div>
     <TranslateButton
       buttonText="Translate"
@@ -18,20 +28,33 @@
   
   <script>
 import TranslateButton from "./TranslateButton.vue";
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css"; // import the styles somewhere
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism-tomorrow.css";
 export default {
   name: "TranslateInput",
   components: {
     TranslateButton,
+    PrismEditor,
   },
   data() {
     return {
       returnedText: "",
+      lineNumbers: true
     };
   },
   computed: {
     // Updates the store with reactive input text
-    inputText() {
-      return this.$store.state.inputText;
+    inputText: {
+      get() {
+        return this.$store.state.inputText;
+      },
+      set(value) {
+        this.$store.commit('setInputText', value);
+      }
     },
   },
   methods: {
@@ -41,6 +64,10 @@ export default {
      */
     updateInputText(text) {
       this.$store.commit("setInputText", text);
+    },
+
+    highlighter() {
+      return highlight(this.inputText, languages.js);
     },
 
     // Dispatches translated code and sets returned text to translation
@@ -54,6 +81,7 @@ export default {
         this.returnedText = `Error: ${result.error}`;
       }
     },
+
   },
 };
 </script>
@@ -68,7 +96,7 @@ export default {
   flex-direction: row;
 }
 
-textarea {
+.translate-input__text-area {
   width: 100%;
   outline: none;
   border: none;
@@ -86,6 +114,22 @@ textarea {
     border: 2px solid rgb(0, 0, 159);
   }
 }
+
+.my-editor {
+  background: #2d2d2d;
+  color: #ccc;
+  min-height: 430px;
+  font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 430px;
+}
+
+.prism-editor__textarea:focus {
+  outline: none;
+}
+
 
 @media all and (max-width: 788px) {
     .translate-input__text-container {
