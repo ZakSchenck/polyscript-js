@@ -1,7 +1,7 @@
 # Polyscript JS (WIP)
 ## Live Site: https://zakschenck.github.io/polyscript-js
 
-![Website img](https://imgur.com/a/iBZCIi0)
+![Website img](https://i.imgur.com/guWtJ4O.png)
 
 
 ## What is it?
@@ -20,7 +20,7 @@ Future Implementations include:
 * Traversing the AST with better contexual knowledge
 * More accurate translations
 * More language support
-* Backend allowing users to save code snippets (Most likely GO).
+* Backend allowing users to save code snippets.
 
 ## Challenges & Complexities
 ### During this project I had to create several algorithms ESPECIALLY in my AST Traversal. 

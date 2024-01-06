@@ -1,13 +1,6 @@
 <template>
   <div class="translate-input__container">
     <div class="translate-input__text-container">
-      <!-- 
-        <textarea
-        :value="inputText"
-        @input="updateInputText($event.target.value)"
-        placeholder="Paste your VALID Javascript code here"
-      </textarea> -->
-
       <prism-editor
       class="my-editor height-300"
       v-model="inputText"
@@ -34,6 +27,7 @@ import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
 import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism-tomorrow.css";
+
 export default {
   name: "TranslateInput",
   components: {
