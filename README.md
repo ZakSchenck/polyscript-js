@@ -1,7 +1,8 @@
 # Polyscript JS (WIP)
 ## Live Site: https://zakschenck.github.io/polyscript-js
 
-![Alt text][https://ibb.co/RgJZhKv]
+![alt text](https://ibb.co/RgJZhKv)
+
 
 ## What is it?
 In a world where English is the monopoly on programming languages, this is a helpful educational resource for people who do not speak English and want to understand the Javascript keywords with a quick translation. This heavily speeds up the process of using Google translator, and you can easily view each translated word in the Javascript language (currently only supporting Dutch).
