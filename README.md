@@ -1,7 +1,7 @@
 # Polyscript JS (WIP)
 ## Live Site: https://zakschenck.github.io/polyscript-js
 
-![Website img](https://imgur.com/a/iBZCIi0)
+![Website img](https://i.imgur.com/guWtJ4O.png)
 
 
 ## What is it?
