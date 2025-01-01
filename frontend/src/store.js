@@ -12,7 +12,7 @@ export default createStore({
     // Resulted translated code
     translatedCode: '',
     // Current Selected Language
-    selectedLanguage: 'Dutch',
+    selectedLanguage: 'Nederlands',
   },
   mutations: {
     setInputText(state, payload) {
@@ -39,10 +39,10 @@ export default createStore({
     translateCode({ commit, state }) {
 
       const languageKeywordMaps = {
-        Dutch: dutchKeywordMap,
-        Mandarin: mandarinKeywordMap,
-        Japanese: japaneseKeywordMap,
-        Spanish: spanishKeywordMap,
+        Nederlands: dutchKeywordMap,
+        中文: mandarinKeywordMap,
+        日本語: japaneseKeywordMap,
+        Español: spanishKeywordMap,
     };
 
       const result = processCode(languageKeywordMaps[state.selectedLanguage], state.inputText)

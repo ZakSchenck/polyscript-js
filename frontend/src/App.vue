@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavHeader />
-    <LanguageCounter header="Translate Code" subtext="2 Languages" />
+    <LanguageCounter header="Translate Code" subtext="4 Languages" />
     <div class="app__text-container">
       <InputHeader />
       <div class="app__translator-container">

@@ -12,8 +12,8 @@
 export default {
   data() {
     return {
-      options: ["Dutch", "Spanish", "Mandarin", "Japanese"],
-      selectedOption: "Dutch", 
+      options: ["Nederlands", "Español", "中文", "日本語"],
+      selectedOption: "Nederlands", 
     };
   },
 
@@ -31,23 +31,18 @@ export default {
 <style scoped lang="scss">
 div {
   width: 100%;
+  position: relative;
 }
 .dropdown {
   font-size: 20px;
   border: none;
   outline: none;
   background: none;
-  margin-left: 45%;
+  margin-left: -15%;
   position: relative;
   width: min-content;
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgb(0, 115, 255);
-    height: 3px;
+  &:hover {
+    cursor: pointer;
   }
 }
 </style>

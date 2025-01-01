@@ -33,5 +33,8 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  p {
+    width: 140%;
+  }
 }
 </style>
