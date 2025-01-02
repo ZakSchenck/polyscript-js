@@ -4,12 +4,17 @@
       <img id="nav-header__beta" src="../assets/beta.png" alt="beta banner" />
       <img src="../assets/polylogo.png" alt="polyscript logo" />
     </div>
+    <DonateButton />
   </header>
 </template>
 
 <script>
+import DonateButton from './DonateButton.vue';
 export default {
   name: "NavHeader",
+  components: {
+    DonateButton
+  }
 };
 </script>
 
@@ -20,6 +25,7 @@ header {
   padding: 0 10% 0 10%;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   background-color: white;
   .nav-header__img-container {
