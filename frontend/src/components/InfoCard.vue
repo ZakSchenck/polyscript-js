@@ -3,8 +3,6 @@
     <div class="info-card__card">
       <img src="../assets/quotesymbol.png" alt="quote symbol" />
       <p>
-        Future implementations of languages
-        include: German, Korean, French, Italian, and more.
         Translations and errors will be more accurate and verbose as this
         application grows. All code belongs to Zak Schenck.
       </p>

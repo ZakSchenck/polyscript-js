@@ -91,6 +91,8 @@ export default {
 }
 
 .translate-input__text-area {
+  background-color: #2D2D2D;
+  color: #CCCCCC;
   width: 100%;
   outline: none;
   border: none;
@@ -99,8 +101,6 @@ export default {
   border-right: 2px solid #dae1e8;
   height: 430px;
   resize: none;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
   font-size: 16px;
   padding-top: 2%;
   padding-left: 2%;

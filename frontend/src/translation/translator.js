@@ -16,6 +16,7 @@ export const processCode = (languageMap, codeString) => {
     });
 
     const replacements = [];
+    const keywords = [];
 
     // Try statement handling potential errors
     try {
@@ -278,14 +279,17 @@ export const processCode = (languageMap, codeString) => {
         // Apply replacements in reverse order to the code
         // Sorting the replacements array in order of index positions to counteract issues 
         replacements.sort((a, b) => b.start - a.start).forEach(({ start, end, replacement }) => {
-            // Replaces each keyword while, adding on the rest of the original code string
+            // Replaces each keyword while adding on the rest of the original code string
             code = code.substring(0, start) + replacement + code.substring(end);
+
+            // Get an array of all NEW keywords that were replaced
+            keywords.push(replacement);
         });
 
-        return { success: true, code: code };
+        return { success: true, code: code, replacedKeywords: keywords };
     } catch (error) {
         // Handle parsing errors
-        console.error("Error parsing the code:", error);
+        console.error("Failed translating code:", error);
         return { success: false, error: error.message };
     }
 }

@@ -4,6 +4,7 @@ import { dutchKeywordMap } from './translation/language-maps/dutch-maps';
 import { spanishKeywordMap } from './translation/language-maps/spanish-maps';
 import { mandarinKeywordMap } from './translation/language-maps/mandarin-maps';
 import { japaneseKeywordMap } from './translation/language-maps/japanese-maps';
+import { germanKeywordMap } from './translation/language-maps/german-maps';
 
 export default createStore({
   state: {
@@ -12,7 +13,7 @@ export default createStore({
     // Resulted translated code
     translatedCode: '',
     // Current Selected Language
-    selectedLanguage: 'Nederlands',
+    selectedLanguage: 'Español',
   },
   mutations: {
     setInputText(state, payload) {
@@ -43,16 +44,16 @@ export default createStore({
         中文: mandarinKeywordMap,
         日本語: japaneseKeywordMap,
         Español: spanishKeywordMap,
+        Deutsch: germanKeywordMap
     };
 
       const result = processCode(languageKeywordMaps[state.selectedLanguage], state.inputText)
+      console.log(result)
         if (result.success) {
           commit('setTranslatedCode', result.code);
         } else {
-          // Set error message back to frontend
           commit('setTranslatedCode', `Error: ${result.error}`);
         }
-        // Return result back to the component
         return result; 
       },
   },

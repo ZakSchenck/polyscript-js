@@ -12,8 +12,8 @@
 export default {
   data() {
     return {
-      options: ["Nederlands", "Español", "中文", "日本語"],
-      selectedOption: "Nederlands", 
+      options: ["Nederlands", "Español", "中文", "日本語", "Deutsch"],
+      selectedOption: "Español", 
     };
   },
 
